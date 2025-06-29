@@ -905,13 +905,17 @@
       document.getElementById('treinoModal').style.display = 'none';
     }
 
-    // Inicialização
-    carregarUsuario();
-    renderTreino();
-    carregarMeta();
-    renderCompleto();
-    renderDieta();
-    renderCalendario();
+    // Inicialização completa
+carregarUsuario();
+renderTreino();
+carregarMeta();
+
+// Adicione explicitamente essas chamadas aqui:
+renderCompleto(); // Renderiza o treino completo A/B logo no carregamento
+renderDieta();    // Renderiza dieta completa logo no carregamento
+
+renderCalendario();
+
   </script>
 </body>
 </html>
