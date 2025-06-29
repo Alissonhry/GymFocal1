@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Treino Check - App Mobile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #388E3C;
+      --text-color: #333;
+      --bg-color: #f4f4f4;
+      --card-bg: #fff;
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #81C784;
+      --secondary-color: #66BB6A;
+      --text-color: #eee;
+      --bg-color: #121212;
+      --card-bg: #1E1E1E;
+      --shadow: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      box-shadow: 0 2px 4px var(--shadow);
+    }
+
+    header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background-color: #eee;
+      border-top: 1px solid #ccc;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 999;
+      box-shadow: 0 -2px 4px var(--shadow);
+      transition: background-color 0.3s;
+    }
+
+    [data-theme="dark"] nav {
+      background-color: #1E1E1E;
+      border-color: #333;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 0.8rem;
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: background-color 0.2s;
+    }
+
+    nav button.active {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 600;
+    }
+
+    nav button:hover {
+      background-color: #ddd;
+    }
+
+    [data-theme="dark"] nav button:hover {
+      background-color: #333;
+    }
+
+    .container {
+      padding: 1rem;
+      padding-bottom: 5rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fade 0.2s ease-in;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    h2, h3 {
+      font-size: 1.4rem;
+      color: var(--secondary-color);
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .button {
+      width: 100%;
+      padding: 1rem;
+      margin: 0.8rem 0;
+      font-size: 1.1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px var(--shadow);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .button:disabled {
+      background-color: #ccc;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      box-shadow: 0 2px 4px var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .card .left {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .card input[type="checkbox"] {
+      margin-right: 0.7rem;
+      transform: scale(1.3);
+    }
+
+    .card button {
+      background: none;
+      border: none;
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 0.3rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .input-row input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .progress-bar {
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 22px;
+      margin: 1rem 0;
+      box-shadow: inset 0 1px 3px var(--shadow);
+    }
+
+    .progress {
+      background-color: var(--primary-color);
+      height: 100%;
+      width: 0%;
+      text-align: center;
+      color: white;
+      font-size: 0.95rem;
+      transition: width 0.3s;
+    }
+    .input-group {
+      margin: 1rem 0;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+
+    .input-group input, .input-group textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .info-section {
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px var(--shadow);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .info-section strong {
+      color: var(--secondary-color);
+    }
+
+    .mes-controle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .mes-controle button {
+      background: none;
+      border: 1px solid var(--secondary-color);
+      color: var(--secondary-color);
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .mes-controle button:hover {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    #diasSemana {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-weight: 600;
+      padding-bottom: 0.5rem;
+    }
+
+    .grid-calendario {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.3rem;
+    }
+
+    .grid-calendario button {
+      background-color: var(--card-bg);
+      border: 1px solid var(--shadow);
+      padding: 0.8rem 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .grid-calendario button:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .grid-calendario .concluido {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: 2rem auto;
+      position: relative;
+      box-shadow: 0 2px 8px var(--shadow);
+      color: var(--text-color);
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: var(--secondary-color);
+    }
+
+    .modal-content .close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      cursor: pointer;
+      font-size: 1.3rem;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    Treino Check
+    <button id="toggleTheme">🌓</button>
+  </header>
+  <div class="container">
+    <!-- Login/Cadastro Page -->
+    <div id="loginPage" class="page active">
+      <h2>Login ou Cadastro</h2>
+      <div class="input-group">
+        <label for="nomeUsuario">Nome de Usuário:</label>
+        <input type="text" id="nomeUsuario" placeholder="Seu nome">
+      </div>
+      <div class="input-group">
+        <label for="emailUsuario">Email:</label>
+        <input type="email" id="emailUsuario" placeholder="email@exemplo.com">
+      </div>
+      <div class="input-group">
+        <label for="senhaUsuario">Senha:</label>
+        <input type="password" id="senhaUsuario" placeholder="Senha">
+      </div>
+      <button class="button" onclick="loginOuCadastrar()">➡️ Entrar / Cadastrar</button>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page">
+      <h2>Bem-vindo, <span id="userName"></span>!</h2>
+      <button class="button" onclick="showPage('treinoPage')">🏋️ Meu Treino</button>
+      <button class="button" onclick="showPage('dietaPage')">🍎 Minha Dieta</button>
+      <button class="button" onclick="showPage('metaPage')">🎯 Minha Meta</button>
+      <button class="button" onclick="showPage('completoPage')">📋 Treino Completo</button>
+      <button class="button" onclick="showPage('historicoPage')">📅 Histórico</button>
+      <button class="button" onclick="logout()">🚪 Sair</button>
+    </div>
+
+    <!-- Treino Page -->
+    <div id="treinoPage" class="page">
+      <h2 id="treinoTitulo">Treino do Dia</h2>
+      <ul id="treinoList"></ul>
+      <div class="progress-bar">
+        <div id="progress" class="progress">0%</div>
+      </div>
+      <button class="button" onclick="finalizarTreino()">✅ Finalizar Treino</button>
+    </div>
+
+    <!-- Dieta Page -->
+    <div id="dietaPage" class="page">
+      <h2>Minha Dieta</h2>
+      <ul id="dietaList"></ul>
+      <div class="input-row">
+        <input type="text" id="novoTituloDieta" placeholder="Nova refeição">
+        <input type="text" id="novoItensDieta" placeholder="Itens separados por ;">
+        <button onclick="adicionarDieta()">➕</button>
+      </div>
+    </div>
+
+    <!-- Meta Page -->
+    <div id="metaPage" class="page">
+      <h2>Minha Meta de Peso</h2>
+      <div class="input-group">
+        <label for="pesoAtual">Peso Atual (kg):</label>
+        <input type="number" id="pesoAtual" placeholder="Ex: 95">
+      </div>
+      <div class="input-group">
+        <label for="metaPeso">Meta de Peso (kg):</label>
+        <input type="number" id="metaPeso" placeholder="Ex: 85">
+      </div>
+      <button class="button" onclick="salvarMeta()">💾 Salvar Meta</button>
+      <div id="metaInfo"></div>
+    </div>
+
+    <!-- Treino Completo Page -->
+    <div id="completoPage" class="page">
+      <h2>Treino Completo</h2>
+      <h3>📋 Treino A</h3>
+      <ul id="completoListA"></ul>
+      <div class="input-row">
+        <input type="text" id="novoA" placeholder="Novo exercício A">
+        <button onclick="adicionarCompleto('A')">➕</button>
+      </div>
+      <h3>📋 Treino B</h3>
+      <ul id="completoListB"></ul>
+      <div class="input-row">
+        <input type="text" id="novoB" placeholder="Novo exercício B">
+        <button onclick="adicionarCompleto('B')">➕</button>
+      </div>
+    </div>
+    <!-- Histórico Page -->
+    <div id="historicoPage" class="page">
+      <h2>📅 Histórico de Treinos</h2>
+      
+      <div id="mesControle" class="mes-controle">
+        <button id="btnAnterior" onclick="anteriorMes()">◀️</button>
+        <span id="mesAtual"></span>
+        <button id="btnProximo" onclick="proximoMes()">▶️</button>
+      </div>
+      
+      <div id="diasSemana">
+        <div>Dom</div>
+        <div>Seg</div>
+        <div>Ter</div>
+        <div>Qua</div>
+        <div>Qui</div>
+        <div>Sex</div>
+        <div>Sáb</div>
+      </div>
+      
+      <div id="calendario" class="grid-calendario"></div>
+    </div>
+
+    <!-- Modal Popup -->
+    <div id="modalTreino" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="fecharModal()">&times;</span>
+        <h3>Detalhes do Treino</h3>
+        <div id="detalhesTreino"></div>
+      </div>
+    </div>
+
+  <nav>
+    <button id="navHome" class="active">🏠</button>
+  </nav>
+  <script>
+    // Tema Escuro/Claro
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', document.body.dataset.theme);
+    });
+    if (localStorage.getItem('theme')) {
+      document.body.dataset.theme = localStorage.getItem('theme');
+    }
+
+    // Navegação
+    const pages = document.querySelectorAll('.page');
+    const navHomeBtn = document.getElementById('navHome');
+    navHomeBtn.addEventListener('click', () => showPage('homePage'));
+
+    function showPage(pageId) {
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      if (pageId === 'historicoPage') renderCalendario();
+      if (pageId === 'dietaPage') renderDieta();
+      if (pageId === 'completoPage') renderCompleto();
+    }
+
+    // LOGIN / CADASTRO
+    function loginOuCadastrar() {
+      const nome = document.getElementById('nomeUsuario').value.trim();
+      const email = document.getElementById('emailUsuario').value.trim();
+      const senha = document.getElementById('senhaUsuario').value.trim();
+      if (!nome || !email || !senha) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+      localStorage.setItem('userNome', nome);
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userSenha', senha);
+      carregarUsuario();
+      showPage('homePage');
+    }
+
+    function carregarUsuario() {
+      const nome = localStorage.getItem('userNome');
+      if (nome) {
+        document.getElementById('userName').textContent = nome;
+        showPage('homePage');
+      } else {
+        showPage('loginPage');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('userNome');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('userSenha');
+      showPage('loginPage');
+    }
+
+    // TREINO A/B
+    let treinoA = JSON.parse(localStorage.getItem('treinoA')) || [
+      { nome: 'Agachamento livre — 4x15', feito: false },
+      { nome: 'Passada — 3x12', feito: false },
+      { nome: 'Stiff — 3x12', feito: false }
+    ];
+
+    let treinoB = JSON.parse(localStorage.getItem('treinoB')) || [
+      { nome: 'Remada — 3x15', feito: false },
+      { nome: 'Supino — 3x15', feito: false },
+      { nome: 'Tríceps corda — 3x15', feito: false }
+    ];
+
+    let diaTreino = localStorage.getItem('diaTreino') || 'A';
+    const treinoList = document.getElementById('treinoList');
+    const treinoTitulo = document.getElementById('treinoTitulo');
+    const progressBar = document.getElementById('progress');
+
+    function renderTreino() {
+      treinoList.innerHTML = '';
+      treinoTitulo.textContent = `Treino do Dia ${diaTreino}`;
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+
+      lista.forEach((ex, index) => {
+        const li = document.createElement('li');
+        li.className = 'card';
+
+        const left = document.createElement('div');
+        left.className = 'left';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = ex.feito;
+        checkbox.addEventListener('change', () => {
+          ex.feito = checkbox.checked;
+          salvarTreinos();
+          atualizarProgresso();
+        });
+        left.appendChild(checkbox);
+
+        const span = document.createElement('span');
+        span.textContent = ex.nome;
+        left.appendChild(span);
+
+        li.appendChild(left);
+        treinoList.appendChild(li);
+      });
+      atualizarProgresso();
+    }
+
+    function atualizarProgresso() {
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+      const total = lista.length;
+      const marcados = lista.filter(e => e.feito).length;
+      const perc = total ? Math.round((marcados / total) * 100) : 0;
+      progressBar.style.width = perc + '%';
+      progressBar.textContent = perc + '%';
+    }
+
+    function finalizarTreino() {
+      alert('✅ Treino finalizado!');
+      registrarHistorico(new Date());
+      treinoA.forEach(e => e.feito = false);
+      treinoB.forEach(e => e.feito = false);
+      diaTreino = diaTreino === 'A' ? 'B' : 'A';
+      localStorage.setItem('diaTreino', diaTreino);
+      salvarTreinos();
+      renderTreino();
+    }
+
+    function salvarTreinos() {
+      localStorage.setItem('treinoA', JSON.stringify(treinoA));
+      localStorage.setItem('treinoB', JSON.stringify(treinoB));
+    }
+
+    // HISTÓRICO
+    let mesAtual = new Date();
+
+    function renderCalendario() {
+      document.getElementById('mesAtual').textContent = mesAtual.toLocaleString('default', { month: 'long', year: 'numeric' });
+      const diasContainer = document.getElementById('calendario');
+      diasContainer.innerHTML = '';
+
+      const primeiroDia = new Date(mesAtual.getFullYear(), mesAtual.getMonth(), 1);
+      const ultimoDia = new Date(mesAtual.getFullYear(), mesAtual.getMonth() + 1, 0);
+
+      const registros = JSON.parse(localStorage.getItem('historicoTreino')) || [];
+
+      for (let i = 0; i < primeiroDia.getDay(); i++) {
+        diasContainer.appendChild(document.createElement('div'));
+      }
+
+      for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+        const dataStr = `${mesAtual.getFullYear()}-${mesAtual.getMonth() + 1}-${dia}`;
+        const registroDia = registros.find(r => r.data === dataStr);
+
+        const btn = document.createElement('button');
+        btn.textContent = dia;
+        if (registroDia) btn.classList.add('concluido');
+        btn.addEventListener('click', () => abrirModalTreino(registroDia, dia, dataStr));
+        diasContainer.appendChild(btn);
+      }
+    }
+
+    function anteriorMes() {
+      mesAtual.setMonth(mesAtual.getMonth() - 1);
+      renderCalendario();
+    }
+
+    function proximoMes() {
+      mesAtual.setMonth(mesAtual.getMonth() + 1);
+      renderCalendario();
+    }
+
+    function registrarHistorico(data) {
+      const registros = JSON.parse(localStorage.getItem('historicoTreino')) || [];
+      const dataStr = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+      const feitos = lista.filter(e => e.feito).map(e => e.nome);
+
+      const novoRegistro = { data: dataStr, treino: diaTreino, feitos };
+      const existente = registros.find(r => r.data === dataStr);
+      if (!existente) registros.push(novoRegistro);
+      else Object.assign(existente, novoRegistro);
+
+      localStorage.setItem('historicoTreino', JSON.stringify(registros));
+      renderCalendario();
+    }
+
+    function abrirModalTreino(registroDia, dia, dataStr) {
+      const modal = document.getElementById('modalTreino');
+      const detalhes = document.getElementById('detalhesTreino');
+
+      if (registroDia) {
+        detalhes.innerHTML = `
+          <p><strong>Dia:</strong> ${dia}</p>
+          <p><strong>Treino:</strong> ${registroDia.treino}</p>
+          <p><strong>Exercícios feitos:</strong></p>
+          <ul>${registroDia.feitos.map(e => `<li>${e}</li>`).join('')}</ul>
+        `;
+      } else {
+        detalhes.innerHTML = `<p>Nenhum treino registrado neste dia.</p>`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function fecharModal() {
+      document.getElementById('modalTreino').style.display = 'none';
+    }
+
+    // META
+    function salvarMeta() {
+      const atual = document.getElementById('pesoAtual').value;
+      const meta = document.getElementById('metaPeso').value;
+      localStorage.setItem('pesoAtual', atual);
+      localStorage.setItem('metaPeso', meta);
+      carregarMeta();
+      alert('✅ Meta salva!');
+    }
+
+    function carregarMeta() {
+      const atual = localStorage.getItem('pesoAtual') || '';
+      const meta = localStorage.getItem('metaPeso') || '';
+      document.getElementById('pesoAtual').value = atual;
+      document.getElementById('metaPeso').value = meta;
+      document.getElementById('metaInfo').innerHTML = atual && meta
+        ? `<p><strong>Seu peso atual:</strong> ${atual} kg<br><strong>Meta a bater:</strong> ${meta} kg</p>`
+        : '<p>Defina sua meta para acompanhar aqui.</p>';
+    }
+
+    // DIETA
+    let dieta = JSON.parse(localStorage.getItem('dieta')) || [
+      { titulo: "Café da Manhã", itens: ["Omelete com legumes", "Suco natural"] },
+      { titulo: "Almoço", itens: ["Arroz integral", "Frango grelhado", "Salada"] }
+    ];
+
+    function renderDieta() {
+      const container = document.getElementById('dietaList');
+      container.innerHTML = '';
+      dieta.forEach((ref, index) => {
+        const li = document.createElement('li');
+        li.className = 'card';
+        li.innerHTML = `
+          <strong>${ref.titulo}</strong><br>${ref.itens.join('<br>')}
+          <button onclick="editarDieta(${index})">✏️</button>
+          <button onclick="removerDieta(${index})">❌</button>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    function adicionarDieta() {
+      const titulo = document.getElementById('novoTituloDieta').value.trim();
+      const itens = document.getElementById('novoItensDieta').value.trim().split(';').map(s => s.trim()).filter(s => s);
+      if (titulo && itens.length) {
+        dieta.push({ titulo, itens });
+        salvarDieta();
+        renderDieta();
+        document.getElementById('novoTituloDieta').value = '';
+        document.getElementById('novoItensDieta').value = '';
+      }
+    }
+
+    function editarDieta(index) {
+      const novoTitulo = prompt("Editar título:", dieta[index].titulo);
+      if (!novoTitulo) return;
+      const novosItens = prompt("Editar itens (separados por ;):", dieta[index].itens.join(';'));
+      if (!novosItens) return;
+      dieta[index].titulo = novoTitulo.trim();
+      dieta[index].itens = novosItens.split(';').map(s => s.trim()).filter(s => s);
+      salvarDieta();
+      renderDieta();
+    }
+
+    function removerDieta(index) {
+      if (confirm("Remover esta refeição?")) {
+        dieta.splice(index, 1);
+        salvarDieta();
+        renderDieta();
+      }
+    }
+
+    function salvarDieta() {
+      localStorage.setItem('dieta', JSON.stringify(dieta));
+    }
+
+    // TREINO COMPLETO
+    const completoListA = document.getElementById('completoListA');
+    const completoListB = document.getElementById('completoListB');
+
+    function renderCompleto() {
+      renderListaCompleta(completoListA, treinoA, 'A');
+      renderListaCompleta(completoListB, treinoB, 'B');
+    }
+
+    function renderListaCompleta(container, lista, tipo) {
+      container.innerHTML = '';
+      lista.forEach((ex, index) => {
+        const li = document.createElement('li');
+        li.className = 'card';
+        li.innerHTML = `
+          <span>${ex.nome}</span>
+          <button onclick="editarCompleto(${index}, '${tipo}')">✏️</button>
+          <button onclick="removerCompleto(${index}, '${tipo}')">❌</button>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    function adicionarCompleto(tipo) {
+      const input = document.getElementById(tipo === 'A' ? 'novoA' : 'novoB');
+      const nome = input.value.trim();
+      if (nome) {
+        if (tipo === 'A') treinoA.push({ nome, feito: false });
+        else treinoB.push({ nome, feito: false });
+        input.value = '';
+        salvarTreinos();
+        renderCompleto();
+      }
+    }
+
+    function editarCompleto(index, tipo) {
+      const lista = tipo === 'A' ? treinoA : treinoB;
+      const novo = prompt('Editar exercício:', lista[index].nome);
+      if (novo && novo.trim() !== '') {
+        lista[index].nome = novo.trim();
+        salvarTreinos();
+        renderCompleto();
+      }
+    }
+
+    function removerCompleto(index, tipo) {
+      if (confirm('Remover este exercício?')) {
+        if (tipo === 'A') treinoA.splice(index, 1);
+        else treinoB.splice(index, 1);
+        salvarTreinos();
+        renderCompleto();
+      }
+    }
+
+    // Inicialização
+    carregarUsuario();
+    renderTreino();
+    carregarMeta();
+    renderCalendario();
+  </script>
+</body>
+</html>
