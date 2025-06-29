@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gym Focal - App Mobile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4CAF50;
+      --secondary-color: #388E3C;
+      --text-color: #333;
+      --bg-color: #f4f4f4;
+      --card-bg: #fff;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --alert-bg: #ffffff;
+      --alert-text: #333;
+    }
+
+    [data-theme="dark"] {
+      --primary-color: #81C784;
+      --secondary-color: #66BB6A;
+      --text-color: #eee;
+      --bg-color: #121212;
+      --card-bg: #1E1E1E;
+      --shadow: rgba(255, 255, 255, 0.05);
+      --alert-bg: #1E1E1E;
+      --alert-text: #eee;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px var(--shadow);
+    }
+
+    header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      bottom: 1rem;
+      width: 100%;
+      z-index: 999;
+      background: transparent;
+    }
+
+    nav button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 8px var(--shadow);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    nav button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .container {
+      padding: 1rem;
+      padding-bottom: 7rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fade 0.2s ease-in;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    h2, h3 {
+      font-size: 1.4rem;
+      color: var(--secondary-color);
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      margin: 0.5rem 0;
+    }
+
+    .button {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .button:disabled {
+      background-color: #ccc;
+      color: #666;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      box-shadow: 0 2px 4px var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .card .left {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .card input[type="checkbox"] {
+      margin-right: 0.7rem;
+      transform: scale(1.3);
+    }
+
+    .card button {
+      background: none;
+      border: none;
+      color: var(--secondary-color);
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: 0.3rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .input-row input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .progress-bar {
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 22px;
+      margin: 1rem 0;
+      box-shadow: inset 0 1px 3px var(--shadow);
+    }
+
+    .progress {
+      background-color: var(--primary-color);
+      height: 100%;
+      width: 0%;
+      text-align: center;
+      color: white;
+      font-size: 0.95rem;
+      transition: width 0.3s;
+    }
+
+    .input-group {
+      margin: 1rem 0;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .input-group .checkbox-row {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .input-group .checkbox-row input[type="checkbox"] {
+      margin-right: 0.5rem;
+      transform: scale(1.2);
+    }
+
+    .info-section {
+      background: var(--card-bg);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px var(--shadow);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .info-section strong {
+      color: var(--secondary-color);
+    }
+
+    /* Calendário */
+    .calendario-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .calendario-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .dia {
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      background-color: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .dia.feito {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .dia.nao-feito {
+      background-color: #ccc;
+      color: #333;
+    }
+
+    .icon-button {
+      padding: 0.3rem 0.6rem;
+      font-size: 1rem;
+      border: none;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .icon-button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    /* Modal de alerta estiloso */
+    .alert-modal, .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .alert-content, .modal-content {
+      background: var(--card-bg);
+      color: var(--text-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 4px 12px var(--shadow);
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .alert-content button, .modal-content button {
+      margin-top: 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .alert-content button:hover, .modal-content button:hover {
+      background-color: var(--secondary-color);
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    Gym Focal
+    <button id="toggleTheme">🌓</button>
+  </header>
+  <div class="container">
+    <!-- Login/Cadastro Page -->
+    <div id="loginPage" class="page active">
+      <h2>Login ou Cadastro</h2>
+      <div class="input-group">
+        <label for="nomeUsuario">Nome de Usuário:</label>
+        <input type="text" id="nomeUsuario" placeholder="Seu nome">
+      </div>
+      <div class="input-group">
+        <label for="senhaUsuario">Senha:</label>
+        <input type="password" id="senhaUsuario" placeholder="Senha">
+      </div>
+      <div class="input-group checkbox-row">
+        <input type="checkbox" id="manterConectado">
+        <label for="manterConectado">🔒 Manter conectado</label>
+      </div>
+      <button class="button" onclick="loginOuCadastrar()">➡️ Entrar / Cadastrar</button>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page">
+      <h2>Bem-vindo, <span id="userName"></span>!</h2>
+      <button class="button" onclick="showPage('treinoPage')">🏋️ Meu Treino</button>
+      <button class="button" onclick="showPage('dietaPage')">🍎 Minha Dieta</button>
+      <button class="button" onclick="showPage('metaPage')">🎯 Minha Meta</button>
+      <button class="button" onclick="showPage('completoPage')">📋 Treino Completo</button>
+      <button class="button" onclick="showPage('historicoPage')">📅 Histórico</button>
+      <button class="button" onclick="logout()">🚪 Sair</button>
+    </div>
+
+    <!-- Treino Page -->
+    <div id="treinoPage" class="page">
+      <h2 id="treinoTitulo">Treino do Dia</h2>
+      <ul id="treinoList"></ul>
+      <div class="progress-bar">
+        <div id="progress" class="progress">0%</div>
+      </div>
+      <button class="button" onclick="finalizarTreino()">✅ Finalizar Treino</button>
+    </div>
+
+    <!-- Dieta Page -->
+    <div id="dietaPage" class="page">
+      <h2>Minha Dieta</h2>
+      <div id="dietaList"></div>
+      <button class="button" onclick="adicionarRefeicao()">➕ Nova Refeição</button>
+    </div>
+
+    <!-- Meta Page -->
+    <div id="metaPage" class="page">
+      <h2>Minha Meta de Peso</h2>
+      <div class="input-group">
+        <label for="pesoAtual">Peso Atual (kg):</label>
+        <input type="number" id="pesoAtual" placeholder="Ex: 95">
+      </div>
+      <div class="input-group">
+        <label for="metaPeso">Meta de Peso (kg):</label>
+        <input type="number" id="metaPeso" placeholder="Ex: 85">
+      </div>
+      <button class="button" onclick="salvarMeta()">💾 Salvar Meta</button>
+      <div id="metaInfo"></div>
+    </div>
+
+    <!-- Treino Completo Page -->
+    <div id="completoPage" class="page">
+      <h2>Treino Completo</h2>
+      <div class="info-section">
+        <p>✅ <strong>TREINO DE ACADEMIA - FOCO EM EMAGRECIMENTO E ABDÔMEN CHAPADO</strong></p>
+        <p><strong>Frequência:</strong> 5 a 6x na semana<br>
+        <strong>Tempo:</strong> 1h por dia (30 min cardio + 30 min musculação)</p>
+        <hr>
+        <p>🔥 <strong>Parte 1 - Cardio Acelerado (HIIT ou Aeróbico Rápido)</strong></p>
+        <ul>
+          <li>• Esteira: 5 min aquecimento</li>
+          <li>20 min corrida intensa (ou alternado 1min/1min)</li>
+          <li>5 min desaquecimento</li>
+          <li>OU Elíptico/Bicicleta: 30 min ritmo forte</li>
+        </ul>
+        <hr>
+        <p>🏋️ <strong>Parte 2 - Musculação (Circuito para emagrecimento e definição)</strong></p>
+      </div>
+
+      <h3>📋 Dia A - Inferiores + Core</h3>
+      <ul id="completoListA"></ul>
+      <div class="input-row">
+        <input type="text" id="novoA" placeholder="Novo exercício A">
+        <button onclick="adicionarCompleto('A')">➕</button>
+      </div>
+
+      <h3>📋 Dia B - Superiores + Core</h3>
+      <ul id="completoListB"></ul>
+      <div class="input-row">
+        <input type="text" id="novoB" placeholder="Novo exercício B">
+        <button onclick="adicionarCompleto('B')">➕</button>
+      </div>
+    </div>
+
+    <!-- Histórico Page -->
+    <div id="historicoPage" class="page">
+      <h2>📅 Histórico de Treinos</h2>
+      <div id="mesControle">
+        <button class="icon-button" onclick="anteriorMes()">◀️</button>
+        <span id="mesAtual"></span>
+        <button class="icon-button" onclick="proximoMes()">▶️</button>
+      </div>
+      <div class="calendario-header">
+        <div>DOM</div><div>SEG</div><div>TER</div><div>QUA</div>
+        <div>QUI</div><div>SEX</div><div>SAB</div>
+      </div>
+      <div id="calendario" class="calendario-grid"></div>
+    </div>
+
+    <!-- Modal para Mostrar Treino do Dia -->
+    <div id="treinoModal" class="modal">
+      <div class="modal-content">
+        <h3>Treino do Dia</h3>
+        <div id="treinoModalContent"></div>
+        <button class="close-button" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+
+    <!-- Modal para Alertas Estilosos -->
+    <div id="alertModal" class="alert-modal">
+      <div class="alert-content">
+        <div id="alertMessage"></div>
+        <button onclick="fecharAlerta()">Fechar</button>
+      </div>
+    </div>
+  <nav>
+    <button id="navHome" class="active">🏠</button>
+  </nav>
+
+  <script>
+    // Tema Claro/Escuro
+    document.getElementById('toggleTheme').addEventListener('click', () => {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', document.body.dataset.theme);
+    });
+    if (localStorage.getItem('theme')) {
+      document.body.dataset.theme = localStorage.getItem('theme');
+    }
+
+    // Navegação
+    const pages = document.querySelectorAll('.page');
+    document.getElementById('navHome').addEventListener('click', () => showPage('homePage'));
+    function showPage(pageId) {
+      pages.forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    // Pop-up estiloso de alerta
+    function showAlerta(mensagem) {
+      document.getElementById('alertMessage').textContent = mensagem;
+      document.getElementById('alertModal').style.display = 'flex';
+    }
+    function fecharAlerta() {
+      document.getElementById('alertModal').style.display = 'none';
+    }
+
+    // LOGIN com "Manter Conectado"
+    function loginOuCadastrar() {
+      const nome = document.getElementById('nomeUsuario').value.trim();
+      const senha = document.getElementById('senhaUsuario').value.trim();
+      const manter = document.getElementById('manterConectado').checked;
+
+      if (!nome || !senha) {
+        showAlerta('⚠️ Preencha todos os campos!');
+        return;
+      }
+      localStorage.setItem('userNome', nome);
+      localStorage.setItem('userSenha', senha);
+      localStorage.setItem('manterConectado', manter ? 'true' : 'false');
+      carregarUsuario();
+      showPage('homePage');
+    }
+
+    function carregarUsuario() {
+      const manter = localStorage.getItem('manterConectado') === 'true';
+      const nome = localStorage.getItem('userNome');
+      if (manter && nome) {
+        document.getElementById('userName').textContent = nome + "!";
+        showPage('homePage');
+      } else {
+        showPage('loginPage');
+      }
+    }
+
+    function logout() {
+      if (!localStorage.getItem('manterConectado')) {
+        localStorage.removeItem('userNome');
+        localStorage.removeItem('userSenha');
+      }
+      showPage('loginPage');
+    }
+
+    // ALERT substituindo alert()
+    function sucesso(mensagem) {
+      showAlerta("✅ " + mensagem);
+    }
+
+    // CONTINUA EM PARTE 3 FINAL CORRIGIDA CONTINUAÇÃO (PRÓXIMA MENSAGEM)
+  </script>
+  <script>
+    // Treino A/B
+    let treinoA = JSON.parse(localStorage.getItem('treinoA')) || [
+      { nome: 'Agachamento livre — 4x15', feito: false },
+      { nome: 'Passada — 3x12 cada perna', feito: false },
+      { nome: 'Stiff — 3x12', feito: false },
+      { nome: 'Cadeira abdutora — 4x20', feito: false },
+      { nome: 'Abdominal reto — 3x30', feito: false },
+      { nome: 'Prancha — 3x1min', feito: false }
+    ];
+    let treinoB = JSON.parse(localStorage.getItem('treinoB')) || [
+      { nome: 'Remada — 3x15', feito: false },
+      { nome: 'Supino — 3x15', feito: false },
+      { nome: 'Tríceps corda — 3x15', feito: false },
+      { nome: 'Rosca direta — 3x15', feito: false },
+      { nome: 'Elevação lateral — 3x15', feito: false },
+      { nome: 'Abdominal oblíquo — 3x30', feito: false },
+      { nome: 'Prancha lateral — 3x40s cada lado', feito: false }
+    ];
+    let diaTreino = localStorage.getItem('diaTreino') || 'A';
+
+    function salvarTreinos() {
+      localStorage.setItem('treinoA', JSON.stringify(treinoA));
+      localStorage.setItem('treinoB', JSON.stringify(treinoB));
+    }
+
+    const treinoList = document.getElementById('treinoList');
+    const treinoTitulo = document.getElementById('treinoTitulo');
+    const progressBar = document.getElementById('progress');
+
+    function renderTreino() {
+      treinoList.innerHTML = '';
+      treinoTitulo.textContent = `Treino do Dia ${diaTreino}`;
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+      lista.forEach((ex, index) => {
+        const li = document.createElement('li');
+        li.className = 'card';
+        const left = document.createElement('div');
+        left.className = 'left';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = ex.feito;
+        checkbox.addEventListener('change', () => {
+          ex.feito = checkbox.checked;
+          salvarTreinos();
+          atualizarProgresso();
+        });
+        left.appendChild(checkbox);
+        const span = document.createElement('span');
+        span.textContent = ex.nome;
+        left.appendChild(span);
+        li.appendChild(left);
+        treinoList.appendChild(li);
+      });
+      atualizarProgresso();
+    }
+
+    function atualizarProgresso() {
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+      const total = lista.length;
+      const marcados = lista.filter(e => e.feito).length;
+      const perc = total ? Math.round((marcados / total) * 100) : 0;
+      progressBar.style.width = perc + '%';
+      progressBar.textContent = perc + '%';
+    }
+
+    function finalizarTreino() {
+      const lista = diaTreino === 'A' ? treinoA : treinoB;
+      const feitos = lista.filter(e => e.feito);
+
+      if (feitos.length === 0) {
+        showAlerta('⚠️ Marque ao menos um exercício antes de finalizar!');
+        return;
+      }
+
+      sucesso('Treino finalizado!');
+      registrarHistorico(new Date(), diaTreino, feitos);
+      
+      treinoA.forEach(e => e.feito = false);
+      treinoB.forEach(e => e.feito = false);
+
+      diaTreino = diaTreino === 'A' ? 'B' : 'A';
+      localStorage.setItem('diaTreino', diaTreino);
+      
+      salvarTreinos();
+      renderTreino();
+      renderCalendario();
+    }
+  </script>
+  <script>
+    // Treino Completo Editável
+    const completoListA = document.getElementById('completoListA');
+    const completoListB = document.getElementById('completoListB');
+
+    function renderCompleto() {
+      renderListaCompleta(completoListA, treinoA, 'A');
+      renderListaCompleta(completoListB, treinoB, 'B');
+    }
+
+    function renderListaCompleta(container, lista, tipo) {
+      container.innerHTML = '';
+      lista.forEach((ex, index) => {
+        const li = document.createElement('li');
+        li.className = 'card';
+
+        const span = document.createElement('span');
+        span.textContent = ex.nome;
+        li.appendChild(span);
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = '✏️';
+        editBtn.onclick = () => editarCompleto(index, tipo);
+        li.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '❌';
+        delBtn.onclick = () => removerCompleto(index, tipo);
+        li.appendChild(delBtn);
+
+        container.appendChild(li);
+      });
+    }
+
+    function adicionarCompleto(tipo) {
+      const input = document.getElementById(tipo === 'A' ? 'novoA' : 'novoB');
+      const nome = input.value.trim();
+      if (nome) {
+        if (tipo === 'A') treinoA.push({ nome, feito: false });
+        else treinoB.push({ nome, feito: false });
+        input.value = '';
+        salvarTreinos();
+        renderCompleto();
+        renderTreino();
+      }
+    }
+
+    function editarCompleto(index, tipo) {
+      const lista = tipo === 'A' ? treinoA : treinoB;
+      const novo = prompt('Editar exercício:', lista[index].nome);
+      if (novo && novo.trim() !== '') {
+        lista[index].nome = novo.trim();
+        salvarTreinos();
+        renderCompleto();
+        renderTreino();
+      }
+    }
+
+    function removerCompleto(index, tipo) {
+      if (confirm('Remover este exercício?')) {
+        if (tipo === 'A') treinoA.splice(index, 1);
+        else treinoB.splice(index, 1);
+        salvarTreinos();
+        renderCompleto();
+        renderTreino();
+      }
+    }
+
+    // Dieta Editável
+    let dieta = JSON.parse(localStorage.getItem('dieta'));
+    if (!dieta) {
+      dieta = [
+        { refeicao: 'Café da Manhã', itens: ['Omelete com legumes', 'Suco natural'] },
+        { refeicao: 'Almoço', itens: ['Arroz integral', 'Frango grelhado', 'Salada variada'] },
+        { refeicao: 'Lanche da Tarde', itens: ['Iogurte natural', 'Frutas'] },
+        { refeicao: 'Jantar', itens: ['Sopa de legumes', 'Peito de frango'] },
+        { refeicao: 'Ceia', itens: ['Chá de camomila'] }
+      ];
+    }
+
+    const dietaList = document.getElementById('dietaList');
+
+    function renderDieta() {
+      dietaList.innerHTML = '';
+      dieta.forEach((ref, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const title = document.createElement('strong');
+        title.textContent = ref.refeicao;
+        card.appendChild(title);
+
+        const ul = document.createElement('ul');
+        ref.itens.forEach((item, j) => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          li.style.display = 'flex';
+          li.style.justifyContent = 'space-between';
+          li.style.alignItems = 'center';
+
+          const editBtn = document.createElement('button');
+          editBtn.textContent = '✏️';
+          editBtn.onclick = () => editarItem(i, j);
+          li.appendChild(editBtn);
+
+          const delBtn = document.createElement('button');
+          delBtn.textContent = '❌';
+          delBtn.onclick = () => removerItem(i, j);
+          li.appendChild(delBtn);
+
+          ul.appendChild(li);
+        });
+        card.appendChild(ul);
+
+        const inputRow = document.createElement('div');
+        inputRow.className = 'input-row';
+        const input = document.createElement('input');
+        input.placeholder = `Adicionar item`;
+        const addBtn = document.createElement('button');
+        addBtn.textContent = '➕';
+        addBtn.onclick = () => adicionarItem(i, input);
+        inputRow.appendChild(input);
+        inputRow.appendChild(addBtn);
+
+        card.appendChild(inputRow);
+
+        dietaList.appendChild(card);
+      });
+      localStorage.setItem('dieta', JSON.stringify(dieta));
+    }
+
+    function adicionarRefeicao() {
+      const nome = prompt('Nome da refeição:');
+      if (nome && nome.trim() !== '') {
+        dieta.push({ refeicao: nome.trim(), itens: [] });
+        renderDieta();
+      }
+    }
+
+    function adicionarItem(i, input) {
+      const valor = input.value.trim();
+      if (valor) {
+        dieta[i].itens.push(valor);
+        input.value = '';
+        renderDieta();
+      }
+    }
+
+    function editarItem(i, j) {
+      const novo = prompt('Editar item:', dieta[i].itens[j]);
+      if (novo && novo.trim() !== '') {
+        dieta[i].itens[j] = novo.trim();
+        renderDieta();
+      }
+    }
+
+    function removerItem(i, j) {
+      if (confirm('Remover este item?')) {
+        dieta[i].itens.splice(j, 1);
+        renderDieta();
+      }
+    }
+
+    // Histórico com Calendário e Modal Detalhado
+    let mesAtual = new Date();
+
+    function renderCalendario() {
+      const registros = JSON.parse(localStorage.getItem('historicoTreino')) || [];
+      const hoje = new Date();
+      const ano = mesAtual.getFullYear();
+      const mes = mesAtual.getMonth();
+
+      for (let dia = 1; dia <= new Date(ano, mes + 1, 0).getDate(); dia++) {
+        const data = new Date(ano, mes, dia);
+        const dataStr = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+        const existe = registros.find(r => r.data === dataStr);
+
+        if (data < new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) && !existe) {
+          registros.push({ data: dataStr, tipo: '', exercicios: [] });
+        }
+      }
+      localStorage.setItem('historicoTreino', JSON.stringify(registros));
+
+      document.getElementById('mesAtual').textContent = mesAtual.toLocaleString('default', { month: 'long', year: 'numeric' });
+      const diasContainer = document.getElementById('calendario');
+      diasContainer.innerHTML = '';
+
+      const primeiroDiaSemana = new Date(ano, mes, 1).getDay();
+      const ultimoDia = new Date(ano, mes + 1, 0).getDate();
+
+      for (let i = 0; i < primeiroDiaSemana; i++) {
+        const vazio = document.createElement('div');
+        vazio.className = 'dia';
+        diasContainer.appendChild(vazio);
+      }
+
+      for (let dia = 1; dia <= ultimoDia; dia++) {
+        const dataStr = `${ano}-${mes + 1}-${dia}`;
+        const registro = registros.find(r => r.data === dataStr);
+        const feito = registro && registro.exercicios && registro.exercicios.length > 0;
+
+        const el = document.createElement('div');
+        el.className = 'dia ' + (registro ? (feito ? 'feito' : 'nao-feito') : '');
+        el.textContent = dia;
+        el.addEventListener('click', () => abrirModal(registro, dia));
+        diasContainer.appendChild(el);
+      }
+    }
+
+    function anteriorMes() {
+      mesAtual.setMonth(mesAtual.getMonth() - 1);
+      renderCalendario();
+    }
+
+    function proximoMes() {
+      mesAtual.setMonth(mesAtual.getMonth() + 1);
+      renderCalendario();
+    }
+
+    function registrarHistorico(data, tipo, exerciciosFeitos) {
+      const registros = JSON.parse(localStorage.getItem('historicoTreino')) || [];
+      const dataStr = `${data.getFullYear()}-${data.getMonth() + 1}-${data.getDate()}`;
+      if (!registros.some(r => r.data === dataStr)) {
+        registros.push({
+          data: dataStr,
+          tipo: tipo,
+          exercicios: exerciciosFeitos.map(e => e.nome)
+        });
+        localStorage.setItem('historicoTreino', JSON.stringify(registros));
+      }
+    }
+
+    function abrirModal(registro, dia) {
+      const modal = document.getElementById('treinoModal');
+      const content = document.getElementById('treinoModalContent');
+
+      content.innerHTML = `<p><strong>Dia:</strong> ${dia}</p>`;
+
+      if (registro && registro.exercicios && registro.exercicios.length > 0) {
+        content.innerHTML += `<p><strong>Treino do Dia:</strong> ${registro.tipo}</p>`;
+        const ul = document.createElement('ul');
+        registro.exercicios.forEach(ex => {
+          const li = document.createElement('li');
+          li.textContent = ex;
+          ul.appendChild(li);
+        });
+        content.appendChild(ul);
+      } else {
+        content.innerHTML += `<p>❌ Nenhum treino registrado.</p>`;
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function fecharModal() {
+      document.getElementById('treinoModal').style.display = 'none';
+    }
+
+    // Inicialização
+    carregarUsuario();
+    renderTreino();
+    carregarMeta();
+    renderCompleto();
+    renderDieta();
+    renderCalendario();
+  </script>
+</body>
+</html>
